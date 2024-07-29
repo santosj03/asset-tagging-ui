@@ -37,9 +37,7 @@ export function ProfileInfoCard({ title, description, details, action }) {
             {Object.keys(details).map((el, key) => (
               <li key={key} className="flex items-center gap-4">
                 <Typography
-                  variant="small"
-                  color="blue-gray"
-                  className="font-semibold capitalize"
+                  className="font-semibold capitalize text-sm text-blue-gray-500"
                 >
                   {el}:
                 </Typography>
