@@ -24,10 +24,58 @@ import {
   import { platformSettingsData, conversationsData, projectsData } from "@/data";
   import { useLocation} from "react-router-dom";
   import QRCode from "react-qr-code";
+  import React, { useState, useEffect } from 'react';
   
   export function Delivery_details() {
     const {state} = useLocation();
-    console.log(state) // here you get your post data
+    const assetGroup = state;
+    const [selectedRow , setSelectedRow] = useState(-1);
+    const [otherDetails , setOtherDetails] = useState({
+      category : "",
+      brand : "",
+      total_asset : "",
+      uom : "",
+    })
+
+    const [issuer , setIssuer] = useState({
+      name : "",
+      emp_no : "",
+      department : "",
+      date : "",
+    })
+
+    const [receiver , setReceiver] = useState({
+      name : "",
+      emp_no : "",
+      department : "",
+      date : "",
+    })
+
+    const changeValueComponent = (asset, key) => {
+      setSelectedRow(key);
+      setOtherDetails({
+        category : assetGroup.category.name,
+        brand : assetGroup.brand.name,
+        total_asset : assetGroup.assets.length,
+        uom : assetGroup.uom.name,
+      });
+
+      const details = asset.asset_tag;
+      setIssuer({
+        name : details.user.first_name +" "+ details.user.last_name,
+        emp_no : "",
+        department : details.user.department.name,
+        date : details.updated_at
+      });
+
+      const employee = asset.asset_tag.employee;
+      setReceiver({
+        name : employee.first_name +" "+ employee.last_name,
+        emp_no : employee.employee_no,
+        department : employee.department.name,
+        date : asset.asset_tag.updated_at,
+      });
+    }
 
     return (
       <>
@@ -61,21 +109,62 @@ import {
                   </div>
                 </div>
                 <div className="gird-cols-1 mb-12">
-                  <tr>
-                    {["item", "desciption", "commodity", "declared value"].map((el) => (
-                      <th
-                        key={el}
-                        className="border-b border-blue-gray-50 px-12 text-left"
-                      >
-                        <Typography
-                          variant="small"
-                          className="text-[11px] font-bold uppercase text-blue-gray-400"
-                        >
-                          {el}
-                        </Typography>
-                      </th>
-                    ))}
-                  </tr>
+                  <table className="mt-4 w-full min-w-max table-auto text-left">
+                    <thead>
+                      <tr>
+                      {["property no", "serial", "description", "lifespan"].map((el) => (
+                          <th
+                              key={el}
+                              className="border-b border-blue-gray-50 py-3 px-5 text-left"
+                          >
+                              <Typography
+                              variant="small"
+                              className="text-[11px] font-bold uppercase text-blue-gray-400"
+                              >
+                              {el}
+                              </Typography>
+                          </th>
+                          ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {assetGroup.assets.map(
+                        (asset, key) => {
+                          const className = `py-3 px-5 ${
+                            key === assetGroup.assets.length - 1
+                              ? ""
+                              : "border-b border-blue-gray-50"
+                          }`;
+
+                          return (
+                            <tr className={selectedRow == key ? "bg-gray-300": ""} key={asset.id} onClick={() => changeValueComponent(asset, key)}>
+                              <td className={className}>
+                                <Typography className="text-xs font-normal text-blue-gray-500">
+                                  {asset.property_no}
+                                </Typography>
+                              </td>
+                              <td className={className}>
+                                <Typography className="text-xs font-normal text-blue-gray-500">
+                                  {asset.serial}
+                                </Typography>
+                              </td>
+                              <td className={className}>
+                                <Typography className="text-xs font-normal text-blue-gray-500">
+                                  {asset.description}
+                                </Typography>
+                              </td>
+                              <td className={className}>
+                                <Typography className="text-xs font-normal text-blue-gray-500">
+                                  {asset.lifespan}
+                                </Typography>
+                              </td>
+
+                            </tr>
+                          );
+                        }
+                      )}
+                    </tbody>
+                  </table>
                 </div>
               </CardBody>
             </Card>
@@ -83,27 +172,21 @@ import {
               <CardBody className="p-4">
                 <div className="gird-cols-1 mb-12 grid gap-12 px-4 lg:grid-cols-2 xl:grid-cols-3">
                   <ProfileInfoCard
-                    title="Sender data"
+                    title="Issue By:"
                     details={{
-                      date: "march 19, 1999",
-                      branch: "(44) 123 1234 123",
-                      "shippers name": "Pandoy",
-                      destination: "alecthompson@mail.com",
-                      "consignee's name": "USA",
-                      contact: "092779010456",
-                      origin: "092779010456",
-                      asd: "092779010456",
-                      gfdg: "092779010456",
-                      gfhf: "092779010456",
+                      Name: issuer.name,
+                      // "employee no": issuer.emp_no,
+                      department: issuer.department,
+                      "date issued": issuer.date,
                     }}
                   />
                   <ProfileInfoCard
-                    title="Receiver data"
+                    title="Issued To:"
                     details={{
-                      branch: "(44) 123 1234 123",
-                      "consignee's name": "USA",
-                      address: "Quezon City, Fairview, Brgy Anonas",
-                      contact: "092779010456",
+                      Name: receiver.name,
+                      "employee no": receiver.emp_no,
+                      department: receiver.department,
+                      "date received": receiver.date,
                     }}
                   />
                 </div>
@@ -125,24 +208,22 @@ import {
                 <div className="gird-cols-1">
                     <ProfileInfoCard
                       details={{
-                        commodity: "Dry",
-                        "description of goods": "Some desc here",
-                        "declared values": "PHP 2000",
-                        "payment by": "Sender",
-                        payment: "Paid",
+                        "Category": otherDetails.category,
+                        "Brand": otherDetails.brand,
+                        "Total Asset": otherDetails.total_asset,
+                        "Unit of Measure": otherDetails.uom,
                       }}
                     />
                     <hr className="mt-4 mb-3"/>
-                    <ProfileInfoCard
-                      title="Computation"
+                    {/* <ProfileInfoCard
+                      title="Accountability"
                       details={{
-                        commodity: "Dry",
-                        "description of goods": "Some desc here",
-                        "declared values": "PHP 2000",
-                        "payment by": "Sender",
-                        payment: "Paid",
+                        "Employee Name": "Dry",
+                        "Employee No": "Some desc here",
+                        "Department": "PHP 2000",
+                        "Date issued": "Sender"
                       }}
-                    />
+                    /> */}
                 </div>
               </CardBody>
             </Card>
