@@ -1,32 +1,16 @@
 import {
     Card,
     CardBody,
-    CardHeader,
-    CardFooter,
-    Avatar,
     Typography,
-    Tabs,
-    TabsHeader,
-    Tab,
-    Switch,
-    Tooltip,
-    Button,
     Carousel,
   } from "@material-tailwind/react";
-  import {
-    HomeIcon,
-    ChatBubbleLeftEllipsisIcon,
-    Cog6ToothIcon,
-    PencilIcon,
-  } from "@heroicons/react/24/solid";
-  import { Link } from "react-router-dom";
-  import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
-  import { platformSettingsData, conversationsData, projectsData } from "@/data";
+
+  import { ProfileInfoCard } from "@/widgets/cards";
   import { useLocation} from "react-router-dom";
   import QRCode from "react-qr-code";
-  import React, { useState, useEffect } from 'react';
+  import React, { useState } from 'react';
   
-  export function Delivery_details() {
+  export function AssetTagGroupDetails() {
     const {state} = useLocation();
     const assetGroup = state;
     const [selectedRow , setSelectedRow] = useState(-1);
@@ -253,5 +237,5 @@ import {
     );
   }
   
-  export default Delivery_details;
+  export default AssetTagGroupDetails;
   

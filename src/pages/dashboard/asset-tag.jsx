@@ -97,7 +97,7 @@ export function AssetTag() {
                 Export
               </Button>
               <Button onClick={openModal} className="flex items-center gap-3" size="sm">
-                <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add
+                <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Create
               </Button>
               <AddProductDialog toggle={modalState} action={openModal} message={handleDataFromAddProd}/>
             </div>

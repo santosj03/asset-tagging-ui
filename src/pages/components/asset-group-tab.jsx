@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 export function AssetGroupTab({alert, posts}) 
 {
   const navigate = useNavigate();
-  const navigateToConfirmed = (post) => navigate(`/dashboard/profile`, { state: post});
+  const navigateToConfirmed = (post) => navigate(`/dashboard/asset-tag/details`, { state: post});
 
   return (
     <table className="mt-4 w-full min-w-max table-auto text-left">
